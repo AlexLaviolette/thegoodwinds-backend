@@ -4,103 +4,30 @@
       <div class="col">
         <h1>When Can I Play Disc Golf?</h1>
         <hr><br><br>
-        <h2>Current Status:</h2>
-        <p> {{ weather.current.temp}} C, {{ weather.current.wind_kmh }} km/h</p>
+        <h2>Current Weather:</h2>
+        <!-- <p> {{ weather.current.temp}} C, {{ weather.current.wind_kmh }} km/h</p> -->
         <br><br>
-        <div class="row">
-          <div class="col time">
-            <div v-for="n in 24" v-bind:key="n" class="cell">
-              <p class="inner-cell">
-              {{ new Date().setHours(n-1) | moment("h A") }}
-              </p>
-            </div>
-          </div>
-          <div class="col day" v-for="(chunks, date, index) in chunked" :key="index">
-            <div class="date-header" :class="{ 'today' : index == 0 }">
-              <h4>{{ date | moment("ddd")}}</h4>
-              <h5>{{ date | moment("D")}}</h5>
-            </div>
-            <span v-for="(chunk, index) in chunks" :key="index">
-              <!-- Create the hourly cells. Only the first one of the chunk contains weather information. -->
-              <div class="cell">
-                <p :class="'weather-rating-' + chunk.weather_rating" class="inner-cell">
-                  {{ chunk.temp }} C, {{ chunk.wind_kmh }} km/h, {{ chunk.pop * 100 }}%
-                </p>
-              </div>
-              <div v-for="n in chunk.size-1" :key="n" class="cell">
-                <p :class="'weather-rating-' + chunk.weather_rating" class="inner-cell">
-                </p>
-              </div>
-            </span>
-          </div>
-        </div>
+        <chunked-weather></chunked-weather>
         <br><br>
-        <div class="row">
-          <div class="col time">
-            <div v-for="n in 24" v-bind:key="n" class="cell">
-              <p class="inner-cell">
-              {{ new Date().setHours(n-1) | moment("h A") }}
-              </p>
-            </div>
-          </div>
-          <div class="col day" v-for="(hourly, date, index) in weather.data" :key="index">
-            <div class="date-header" :class="{ 'today' : index == 0 }">
-              <h4>{{ date | moment("ddd")}}</h4>
-              <h5>{{ date | moment("D")}}</h5>
-            </div>
-            <div v-for="(hourly_weather, index) in hourly" :key="index" class="cell">
-              <p :class="'weather-rating-' + hourly_weather.weather_rating" class="inner-cell">
-              {{ hourly_weather.temp }} C, {{ hourly_weather.wind_kmh }} km/h, {{ hourly_weather.pop * 100 }}%
-              </p>
-            </div>
-          </div>
-        </div>
+        <hourly-weather></hourly-weather>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import chunkedWeather from './chunkedWeather.vue';
+import hourlyWeather from './hourlyWeather.vue';
 
 export default {
-  data() {
-    return {
-      weather: {},
-    };
-  },
-  methods: {
-    getWeather() {
-      const path = 'http://localhost:5000/weather/hourly';
-      axios.get(path)
-        .then((res) => {
-          this.weather = res.data;
-        })
-        .catch((error) => {
-          // eslint-disable-next-line
-          console.error(error);
-        });
-    },
-    getChunks() {
-      const path = 'http://localhost:5000/weather/chunked';
-      axios.get(path)
-        .then((res) => {
-          this.chunked = res.data;
-        })
-        .catch((error) => {
-          // eslint-disable-next-line
-          console.error(error);
-        });
-    },
-  },
-  created() {
-    this.getChunks();
-    this.getWeather();
+  components: {
+    'chunked-weather': chunkedWeather,
+    'hourly-weather': hourlyWeather,
   },
 };
 </script>
 
-<style scoped>
+<style>
 
   .weather-rating-1 {
     background-color: #93d5f2;

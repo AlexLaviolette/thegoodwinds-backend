@@ -70,9 +70,9 @@ def get_weather_chunks():
   # Average out wind, temperatue, and pop
   for chunks in chunked.values():
     for chunk in chunks:
-      chunk['temp'] = str(round(chunk['temp'] / chunk['size'], 2))
-      chunk['wind_kmh'] = str(round(chunk['wind_kmh'] / chunk['size'], 2))
-      chunk['pop'] = str(round(chunk['pop'] / chunk['size'], 2))
+      chunk['temp'] = round(chunk['temp'] / chunk['size'])
+      chunk['wind_kmh'] = round(chunk['wind_kmh'] / chunk['size'])
+      chunk['pop'] = round(chunk['pop'] / chunk['size'] * 100)
 
   return chunked
 
