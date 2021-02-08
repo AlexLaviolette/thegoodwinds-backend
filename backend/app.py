@@ -13,8 +13,16 @@ app.config.from_object(__name__)
 # enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
 
+@app.route('/weather', methods=['GET'])
+def get_current_weather():
+  current = get_weather_report_current()
+  current.temp = round(current.temp)
+  current.wind_kmh = round(current.wind_kmh)
+  return current.to_json()
+
+
 def get_weather_by_hour():
-  weather_report = get_weather()
+  weather_report = get_weather_report_hourly()
   # Default each hour to the day's default (we only get 2 days of actual hourly weather)
   summary = {}
   for day, weather in weather_report.daily.items():
@@ -27,10 +35,7 @@ def get_weather_by_hour():
       hour = datetime.fromtimestamp(weather.dt).hour
       summary[day][hour] = weather.to_json()
 
-  return {
-    'current': weather_report.current.to_json(),
-    'data': summary
-  }
+  return summary
 
 
 # Return 7x24 grid, one per day, with 24 hours each
@@ -38,13 +43,14 @@ def get_weather_by_hour():
 def get_weather_hourly():
   return get_weather_by_hour()
 
+# Returns chunks grouped by weather rating.
 @app.route('/weather/chunked', methods=['GET'])
 def get_weather_chunks():
-  data = get_weather_by_hour()
+  hourly = get_weather_by_hour()
 
   chunked = defaultdict(lambda: [])
 
-  for day, hours in data['data'].items():
+  for day, hours in hourly.items():
     previous_rating = 0
     for hour, weather in enumerate(hours): # hour is the index
       weather_rating = weather['weather_rating']

@@ -4,8 +4,7 @@
       <div class="col">
         <h1>When Can I Play Disc Golf?</h1>
         <hr><br><br>
-        <h2>Current Weather:</h2>
-        <!-- <p> {{ weather.current.temp}} C, {{ weather.current.wind_kmh }} km/h</p> -->
+        <current-weather></current-weather>
         <br><br>
         <chunked-weather></chunked-weather>
         <br><br>
@@ -16,11 +15,13 @@
 </template>
 
 <script>
+import currentWeather from './currentWeather.vue';
 import chunkedWeather from './chunkedWeather.vue';
 import hourlyWeather from './hourlyWeather.vue';
 
 export default {
   components: {
+    'current-weather': currentWeather,
     'chunked-weather': chunkedWeather,
     'hourly-weather': hourlyWeather,
   },

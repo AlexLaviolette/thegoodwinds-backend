@@ -7,7 +7,7 @@
         </p>
       </div>
     </div>
-    <div class="col day" v-for="(hourly, date, index) in weather.data" :key="index">
+    <div class="col day" v-for="(hourly, date, index) in weather" :key="index">
       <div class="date-header" :class="{ 'today' : index == 0 }">
         <h4>{{ date | moment("ddd")}}</h4>
         <h5>{{ date | moment("D")}}</h5>

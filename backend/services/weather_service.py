@@ -40,9 +40,22 @@ class WeatherReport:
   def to_json(self):
     return self.__dict__
 
+def get_weather_report_current():
+  endpoint = "%s/weather?lat=%s&lon=%s&appid=%s&units=metric" % (BASE_ENDPOINT, lat, lon, API_TOKEN)
+  response = requests.get(endpoint)
+  json = response.json()
+
+  return WeatherReport(
+    json['dt'],
+    json['main']['temp'],
+    json['main']['feels_like'],
+    json['wind']['speed'] * MS_TO_KMH,
+    0
+  )
+
 # Retrieves current, hourly and daily weather reports
 # Returns hourly/daily grouped by day
-def get_weather():
+def get_weather_report_hourly():
   endpoint = "%s/onecall?lat=%s&lon=%s&exclude=minutely&appid=%s&units=metric" % (BASE_ENDPOINT, lat, lon, API_TOKEN)
   response = requests.get(endpoint)
   json = response.json()
