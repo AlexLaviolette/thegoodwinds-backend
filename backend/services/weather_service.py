@@ -1,5 +1,6 @@
 import requests
 import os
+import math
 from datetime import datetime
 from collections import defaultdict
 
@@ -34,7 +35,7 @@ class WeatherReport:
     self.feels_like = feels_like
     self.wind_kmh = round(wind_kmh, 2)
     self.pop = pop
-    self.colour = get_weather_category(wind_kmh, pop)
+    self.weather_rating, self.wind_rating, self.pop_rating = get_weather_ratings(wind_kmh, pop)
 
   def to_json(self):
     return self.__dict__
@@ -80,17 +81,26 @@ def get_weather():
   return weather_summary
 
 
-def get_weather_category(wind_kmh, pop):
-  if (pop > 0.75 or wind_kmh > 50):
-    return "red"
-  elif (pop > 0.6 or wind_kmh > 40):
-    return "orange"
-  elif (pop > 0.5 or wind_kmh > 30):
-    return "yellow"
-  elif (pop > 0.3 or wind_kmh > 20):
-    return "green"
-  elif (pop > 0.2 or wind_kmh > 10):
-    return "blue"
-  else:
-    return "indigo"
+# 0-10 = 1, 11-20 = 2, 21-30 = 3, 31-40 = 4, 41-50 = 5, 51+ = 6
+def get_wind_rating(wind_kmh):
+  return min(math.ceil(wind_kmh/10), 6)
+
+
+def get_pop_rating(pop):
+  if (pop > 0.7): return 6
+  elif (pop > 0.6): return 5
+  elif (pop > 0.5): return 4
+  elif (pop > 0.3): return 3
+  elif (pop > 0.2): return 2
+  else: return 1
+
+
+# Returns (weather_rating, wind_rating, pop_rating). All integers from (1-6)
+def get_weather_ratings(wind_kmh, pop):
+  wind_rating = get_wind_rating(wind_kmh)
+  pop_rating = get_pop_rating(pop)
+  weather_rating = max(wind_rating, pop_rating)
+
+  return (weather_rating, wind_rating, pop_rating)
+
 
