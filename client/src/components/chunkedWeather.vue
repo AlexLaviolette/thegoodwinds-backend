@@ -15,7 +15,8 @@
       <span v-for="(chunk, index) in chunks" :key="index">
         <!-- Create the hourly cells. Only the first one of the chunk contains weather information. -->
         <div class="cell">
-          <p :class="'weather-rating-' + chunk.weather_rating" class="inner-cell">
+          <p :class="'weather-rating-' + chunk.weather_rating + ' icon-' + chunk.icon" class="inner-cell">
+            <img class="weather-icon" :src="'http://openweathermap.org/img/wn/' + chunk.icon + '@2x.png'">
             {{ chunk.temp }} C, {{ chunk.wind_kmh }} km/h, {{ chunk.pop }}%
           </p>
         </div>

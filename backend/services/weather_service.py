@@ -30,13 +30,14 @@ class WeatherSummary:
 
 # Basic weather report
 class WeatherReport:
-  def __init__(self, dt, temp, feels_like, wind_kmh, pop):
+  def __init__(self, dt, temp, feels_like, wind_kmh, pop, icon):
     self.dt = dt
     self.temp = temp
     self.feels_like = feels_like
     self.wind_kmh = round(wind_kmh, 2)
     self.pop = pop
     self.weather_rating, self.wind_rating, self.pop_rating = get_weather_ratings(wind_kmh, pop)
+    self.icon = icon
 
   def to_json(self):
     return self.__dict__
@@ -51,8 +52,8 @@ def get_weather_report_current():
     json['main']['temp'],
     json['main']['feels_like'],
     json['wind']['speed'] * MS_TO_KMH,
-    0
-  )
+    0,
+    json['weather'][0]['icon'])
 
 # Returns the weather for today up until the current time
 # This uses UTC, so we might get some weather for yesterday in our timezone
@@ -79,7 +80,8 @@ def get_weather_report_hourly():
     json['current']['temp'],
     json['current']['feels_like'],
     json['current']['wind_speed'] * MS_TO_KMH,
-    0)
+    0,
+    json['current']['weather'][0]['icon'])
 
 
   today = get_weather_report_today_so_far()
@@ -93,7 +95,8 @@ def get_weather_report_hourly():
       feels_like = hourly['feels_like']
       wind_kmh = hourly['wind_speed'] * MS_TO_KMH
       pop = 0 # historical weather doesn't include pop
-      weather_report = WeatherReport(dt, temp, feels_like, wind_kmh, pop)
+      icon = hourly['weather'][0]['icon']
+      weather_report = WeatherReport(dt, temp, feels_like, wind_kmh, pop, icon)
       weather_summary.hourly[date_key].append(weather_report)
 
   for hourly in json['hourly']:
@@ -104,7 +107,8 @@ def get_weather_report_hourly():
     feels_like = hourly['feels_like']
     wind_kmh = hourly['wind_speed'] * MS_TO_KMH
     pop = hourly['pop']
-    weather_report = WeatherReport(dt, temp, feels_like, wind_kmh, pop)
+    icon = hourly['weather'][0]['icon']
+    weather_report = WeatherReport(dt, temp, feels_like, wind_kmh, pop, icon)
     weather_summary.hourly[date_key].append(weather_report)
 
   for daily in json['daily']:
@@ -115,7 +119,8 @@ def get_weather_report_hourly():
     feels_like = daily['feels_like']['day']
     wind_kmh = daily['wind_speed'] * MS_TO_KMH
     pop = daily['pop']
-    weather_report = WeatherReport(dt, temp, feels_like, wind_kmh, pop)
+    icon = daily['weather'][0]['icon']
+    weather_report = WeatherReport(dt, temp, feels_like, wind_kmh, pop, icon)
     weather_summary.daily[date_key] = weather_report
 
   return weather_summary

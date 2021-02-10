@@ -62,7 +62,8 @@ def get_weather_chunks():
           "pop_rating": weather["pop_rating"],
           "wind_kmh": weather["wind_kmh"],
           "pop": weather["pop"],
-          "temp": weather["temp"]
+          "temp": weather["temp"],
+          "icon": weather["icon"]
         }
         chunked[day].append(chunk)
         previous_rating = weather_rating

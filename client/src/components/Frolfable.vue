@@ -30,6 +30,7 @@ export default {
 
 <style>
 
+  /* Weather Ratings */
   .weather-rating-1 {
     background-color: #93d5f2;
   }
@@ -47,6 +48,11 @@ export default {
   }
   .weather-rating-6 {
     background-color: #FAE4E3;
+  }
+
+  img.weather-icon {
+    height: 24px;
+    width: 24px;
   }
 
   div.container-fluid {
