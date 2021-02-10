@@ -1,6 +1,7 @@
 import requests
 import os
 import math
+import time
 from datetime import datetime
 from collections import defaultdict
 
@@ -53,6 +54,17 @@ def get_weather_report_current():
     0
   )
 
+# Returns the weather for today up until the current time
+# This uses UTC, so we might get some weather for yesterday in our timezone
+# The weather report endpoint only returns future weather, so we need this to complete today's weather
+def get_weather_report_today_so_far():
+  current_timestamp = int(time.time())
+  endpoint = "%s/onecall/timemachine?lat=%s&lon=%s&appid=%s&dt=%s&units=metric" % (BASE_ENDPOINT, lat, lon, API_TOKEN, current_timestamp)
+  response = requests.get(endpoint)
+  json = response.json()
+
+  return json
+
 # Retrieves current, hourly and daily weather reports
 # Returns hourly/daily grouped by day
 def get_weather_report_hourly():
@@ -68,6 +80,21 @@ def get_weather_report_hourly():
     json['current']['feels_like'],
     json['current']['wind_speed'] * MS_TO_KMH,
     0)
+
+
+  today = get_weather_report_today_so_far()
+  for hourly in today['hourly']:
+    dt = hourly['dt']
+    date_info = datetime.fromtimestamp(dt)
+    # We don't care about yesterday's weather data
+    if (date_info.day >= datetime.now().day):
+      date_key = str(date_info.date())
+      temp = hourly['temp']
+      feels_like = hourly['feels_like']
+      wind_kmh = hourly['wind_speed'] * MS_TO_KMH
+      pop = 0 # historical weather doesn't include pop
+      weather_report = WeatherReport(dt, temp, feels_like, wind_kmh, pop)
+      weather_summary.hourly[date_key].append(weather_report)
 
   for hourly in json['hourly']:
     dt = hourly['dt']
