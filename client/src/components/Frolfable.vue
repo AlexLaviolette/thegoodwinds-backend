@@ -2,8 +2,6 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col">
-        <h1>When Can I Play Disc Golf?</h1>
-        <hr><br><br>
         <current-weather></current-weather>
         <br><br>
         <chunked-weather></chunked-weather>
@@ -51,8 +49,10 @@ export default {
   }
 
   img.weather-icon {
-    height: 24px;
-    width: 24px;
+    height: 35px;
+    width: 35px;
+    position: relative;
+    top: -1px;
   }
 
   div.container-fluid {
@@ -75,7 +75,7 @@ export default {
 
   p.inner-cell {
     margin: 0 5px;
-    height: 24px;
+    height: 30px;
   }
 
   div.col {

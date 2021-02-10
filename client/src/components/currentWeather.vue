@@ -1,7 +1,10 @@
 <template>
   <div>
     <h2>Current Weather:</h2>
-    <p> {{ weather.temp}} C, {{ weather.wind_kmh }} km/h</p>
+    <p>
+      <img class="weather-icon" :src="'http://openweathermap.org/img/wn/' + weather.icon + '@2x.png'">
+      {{ weather.temp}} C, {{ weather.wind_kmh }} km/h
+    </p>
   </div>
 </template>
 
