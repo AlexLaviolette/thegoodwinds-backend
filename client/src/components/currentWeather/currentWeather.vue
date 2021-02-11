@@ -10,7 +10,6 @@
 
 <script>
 import Vue from 'vue';
-import axios from 'axios';
 
 export default Vue.extend({
   name: 'currentWeather',
@@ -22,7 +21,7 @@ export default Vue.extend({
   methods: {
     getCurrentWeather() {
       const path = 'http://localhost:5000/weather';
-      axios.get(path)
+      this.$axios.get(path)
         .then((res) => {
           this.weather = res.data;
         })
