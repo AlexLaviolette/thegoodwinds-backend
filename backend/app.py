@@ -59,8 +59,6 @@ def get_weather_chunks():
         chunk = {
           "weather_rating": weather_rating,
           "size": 1,
-          "hour_start": hour,
-          "hour_end": hour+1,
           "wind_rating": weather['wind_rating'],
           "pop_rating": weather["pop_rating"],
           "wind_kmh": weather["wind_kmh"],
@@ -71,7 +69,6 @@ def get_weather_chunks():
         chunked[day].append(chunk)
         previous_rating = weather_rating
       else:
-        chunked[day][-1]['hour_end'] = hour
         chunked[day][-1]['size'] = chunked[day][-1]['size'] + 1
         # Sum wind, pop, and temp so we can take average
         chunked[day][-1]['temp'] = chunked[day][-1]['temp'] + weather['temp']

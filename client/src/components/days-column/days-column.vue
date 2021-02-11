@@ -6,9 +6,9 @@
     </div>
     <div class="days">
       <div class="hours">
-        <div v-for="n in 17" v-bind:key="n" class="hour">
+        <div v-for="n in 24" v-bind:key="n" class="hour">
           <p>
-            {{ today.setHours(n+4) | moment("hA") }}
+            {{ today.setHours(n-1) | moment("hA") }}
           </p>
         </div>
       </div>
