@@ -1,8 +1,10 @@
+@import '~@/styles/mixins'
 @import '~@/styles/variables'
 
 .chunk
   width: 100%
-  display: block
+  display: flex
+  align-items: flex-start
   box-shadow: 39px -30px 44px -63px rgba(0,0,0,0.83) inset
 
   &.weather-rating-1
@@ -18,12 +20,17 @@
   &.weather-rating-6
     background-color: lighten($orange-red, 45%)
 
+  img.weather-icon
+    height: 35px
+    width: 35px
+    position: relative
+    top: -1px
+
   .content
-    // text-align: center
     display: flex
-    padding: 0 5px 0 20px
+    padding: 5px 0 0 5px
     align-items: center
-    justify-content: space-between
+    justify-content: flex-start
 
     .text
       display: flex
@@ -39,9 +46,12 @@
         top: -9px
 
       &.temp
-        font-size: 1.7em
+        font-size: 1.2em
         font-weight: 600
-        margin-right: 5px
+        line-height: 0.96em
 
       &.wind-pop
-        font-size: 0.75em
+        margin-left: 5px
+        font-size: 0.70em
+
+dump_media_cache()
