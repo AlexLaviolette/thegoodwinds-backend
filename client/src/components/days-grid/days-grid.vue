@@ -10,7 +10,7 @@
 import Vue from 'vue';
 import daysColumn from '@/components/days-column/days-column.vue'
 import dayChunk from '@/components/day-chunk/day-chunk.vue'
-// import response from './response.js'
+import response from './response.js'
 export default Vue.extend({
   name: 'days-grid',
   data() {
@@ -23,13 +23,13 @@ export default Vue.extend({
     'day-chunk': dayChunk,
   },
   created: async function () {
-    // this.chunked = response;
-    try {
-      let result = await this.$axios.get('http://localhost:5000/weather/chunked');
-      this.chunked = result.data;
-    } catch(error) {
-      console.error(error);
-    }
+    this.chunked = response;
+    // try {
+    //   let result = await this.$axios.get('http://localhost:5000/weather/chunked');
+    //   this.chunked = result.data;
+    // } catch(error) {
+    //   console.error(error);
+    // }
   },
 });
 </script>

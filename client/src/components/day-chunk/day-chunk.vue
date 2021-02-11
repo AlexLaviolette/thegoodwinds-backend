@@ -1,7 +1,8 @@
 <template>
-  <div :class="['chunk', 'weather-rating-' + chunk.weather_rating]"  :style="{height: (chunk.size / 24 * 100) + '%'}">
-    <div class="content">
-      <img class="weather-icon" :src="'http://openweathermap.org/img/wn/' + chunk.icon + '@2x.png'">
+  <div :class="['chunk', 'weather-rating-' + chunk.weather_rating, chunk.size > 2 ? 'large-content' : '']"  :style="{height: (chunk.size / 24 * 100) + '%'}">
+    <div class="content" :style="chunk.size > 2 ? {fontSize: chunk.size * 0.1 + 6 + 'em'} : {}">
+      <!-- <img class="weather-icon" :src="'http://openweathermap.org/img/wn/' + chunk.icon + '@2x.png'"> -->
+      <img class="weather-icon" :src="require('./weather/' + chunk.icon + '.svg')">
       <div class="text">
         <p class="temp">{{ chunk.temp }}<sup>°C</sup></p>
         <p class="wind-pop">{{ chunk.wind_kmh }}km/h, {{ chunk.pop }}%</p>

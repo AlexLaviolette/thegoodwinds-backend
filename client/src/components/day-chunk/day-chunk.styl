@@ -4,6 +4,7 @@
 .chunk
   width: 100%
   display: flex
+  flex-direction: column
   align-items: flex-start
   box-shadow: 39px -30px 44px -63px rgba(0,0,0,0.83) inset
 
@@ -20,14 +21,65 @@
   &.weather-rating-6
     background-color: lighten($orange-red, 45%)
 
-  img.weather-icon
-    height: 35px
-    width: 35px
+  &.large-content
+    justify-content: center
     position: relative
-    top: -1px
+    overflow: hidden
+
+    img.weather-icon
+      position: absolute
+      top: 25%
+      right: 8%
+      width: auto
+      height: 180%
+      z-index: 0
+      margin: 0 0
+      filter: invert(0%) sepia(0%) saturate(7484%) hue-rotate(313deg) brightness(93%) contrast(107%);
+      opacity: 0.2
+
+    .content
+      position: absolute
+      top: 0
+      flex-direction: column
+      justify-content: center
+      align-items: flex-start
+
+      .text
+        position: relative
+        width: 100%
+        z-index: 1
+        top: 0.2em
+        flex-direction: row
+        align-items: flex-end
+        justify-content: flex-end
+
+        p
+          &.temp
+            position: relative
+            display: block
+            line-height: 0.5em
+
+          &.wind-pop
+            font-size: 0.2em
+            text-align: left
+            display: block
+            width: 100%
+            position: relative
+            // top: -35px
+
+          sup
+            position: absolute
+            font-size: 0.2em
+            top: 20%
+            left: 100%
+            display: block
+
+          // .wind-pop
+          //   font-size: 0.2em
 
   .content
     display: flex
+    width: 100%
     padding: 5px 0 0 5px
     align-items: center
     justify-content: flex-start
@@ -53,5 +105,12 @@
       &.wind-pop
         margin-left: 5px
         font-size: 0.70em
+
+  img.weather-icon
+    height: 15px
+    width: 15px
+    position: relative
+    top: -1px
+    margin-right: 10px
 
 dump_media_cache()
