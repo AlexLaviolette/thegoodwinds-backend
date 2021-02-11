@@ -52,7 +52,6 @@ def get_weather_chunks():
 
   for day, hours in hourly.items():
     previous_rating = 0
-    counter = 0
     for hour, weather in enumerate(hours): # hour is the index
       weather_rating = weather['weather_rating']
       if (weather_rating != previous_rating):
