@@ -1,0 +1,37 @@
+<template>
+  <div class="days-grid" v-if="chunked">
+    <days-column v-for="(chunks, date, i) in chunked" :date="date" :key="i">
+      <day-chunk v-for="(chunk, i) in chunks" :key="i" :chunk="chunk"></day-chunk>
+    </days-column>
+  </div>
+</template>
+
+<script>
+import Vue from 'vue';
+import daysColumn from '@/components/days-column/days-column.vue'
+import dayChunk from '@/components/day-chunk/day-chunk.vue'
+// import response from './response.js'
+export default Vue.extend({
+  name: 'days-grid',
+  data() {
+    return {
+      chunked: undefined
+    };
+  },
+  components: {
+    'days-column': daysColumn,
+    'day-chunk': dayChunk,
+  },
+  created: async function () {
+    // this.chunked = response;
+    try {
+      let result = await this.$axios.get('http://localhost:5000/weather/chunked');
+      this.chunked = result.data;
+    } catch(error) {
+      console.error(error);
+    }
+  },
+});
+</script>
+
+<style src="./days-grid.styl" lang="stylus"></style>

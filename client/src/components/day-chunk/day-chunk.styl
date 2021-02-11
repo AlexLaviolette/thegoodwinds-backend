@@ -1,0 +1,57 @@
+@import '~@/styles/mixins'
+@import '~@/styles/variables'
+
+.chunk
+  width: 100%
+  display: flex
+  align-items: flex-start
+  box-shadow: 39px -30px 44px -63px rgba(0,0,0,0.83) inset
+
+  &.weather-rating-1
+    background-color: lighten($pistachio, 45%)
+  &.weather-rating-2
+    background-color: lighten($cadet-blue, 45%)
+  &.weather-rating-3
+    background-color: lighten($cg-blue, 45%)
+  &.weather-rating-4
+    background-color: lighten($maize-crayola, 45%)
+  &.weather-rating-5
+    background-color: lighten($yellow-orange-color-wheel, 45%)
+  &.weather-rating-6
+    background-color: lighten($orange-red, 45%)
+
+  img.weather-icon
+    height: 35px
+    width: 35px
+    position: relative
+    top: -1px
+
+  .content
+    display: flex
+    padding: 5px 0 0 5px
+    align-items: center
+    justify-content: flex-start
+
+    .text
+      display: flex
+      align-items: center
+      justify-content: space-between
+
+    p
+      margin: 0
+
+      sup
+        font-size: 0.5em
+        position: relative
+        top: -9px
+
+      &.temp
+        font-size: 1.2em
+        font-weight: 600
+        line-height: 0.96em
+
+      &.wind-pop
+        margin-left: 5px
+        font-size: 0.70em
+
+dump_media_cache()
