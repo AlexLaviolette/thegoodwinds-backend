@@ -1,0 +1,47 @@
+@import '~@/styles/variables'
+
+.chunk
+  width: 100%
+  display: block
+  box-shadow: 39px -30px 44px -63px rgba(0,0,0,0.83) inset
+
+  &.weather-rating-1
+    background-color: lighten($pistachio, 45%)
+  &.weather-rating-2
+    background-color: lighten($cadet-blue, 45%)
+  &.weather-rating-3
+    background-color: lighten($cg-blue, 45%)
+  &.weather-rating-4
+    background-color: lighten($maize-crayola, 45%)
+  &.weather-rating-5
+    background-color: lighten($yellow-orange-color-wheel, 45%)
+  &.weather-rating-6
+    background-color: lighten($orange-red, 45%)
+
+  .content
+    // text-align: center
+    display: flex
+    padding: 0 5px 0 20px
+    align-items: center
+    justify-content: space-between
+
+    .text
+      display: flex
+      align-items: center
+      justify-content: space-between
+
+    p
+      margin: 0
+
+      sup
+        font-size: 0.5em
+        position: relative
+        top: -9px
+
+      &.temp
+        font-size: 1.7em
+        font-weight: 600
+        margin-right: 5px
+
+      &.wind-pop
+        font-size: 0.75em

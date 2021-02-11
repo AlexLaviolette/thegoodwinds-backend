@@ -31,7 +31,6 @@
 
 <script>
 import Vue from 'vue';
-import axios from 'axios';
 
 export default Vue.extend({
   name: 'chunkedWeather',
@@ -43,7 +42,7 @@ export default Vue.extend({
   methods: {
     getChunks() {
       const path = 'http://localhost:5000/weather/chunked';
-      axios.get(path)
+      this.$axios.get(path)
         .then((res) => {
           this.chunked = res.data;
         })

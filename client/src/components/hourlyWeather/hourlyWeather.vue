@@ -23,7 +23,6 @@
 
 <script>
 import Vue from 'vue';
-import axios from 'axios';
 
 export default Vue.extend({
   name: 'hourlyWeather',
@@ -35,7 +34,7 @@ export default Vue.extend({
   methods: {
     getHourly() {
       const path = 'http://localhost:5000/weather/hourly';
-      axios.get(path)
+      this.$axios.get(path)
         .then((res) => {
           this.weather = res.data;
         })
