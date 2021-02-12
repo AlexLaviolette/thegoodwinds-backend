@@ -1,8 +1,12 @@
 <template>
   <div
-    :class="['chunk', 'weather-rating-' + chunk.weather_rating, chunk.size > 2 ? 'large-content' : '']"
+    :class="[
+      'chunk',
+      'weather-rating-' + chunk.weather_rating, chunk.size > 2 ? 'large-content' : '',
+      chunk.size > 3 && chunk.weather_rating === 1 ? 'extra-special': ''
+    ]"
     :style="{height: (chunk.size / 24 * 100) + '%'}">
-    <div class="content" :style="chunk.size > 2 ? {fontSize: chunk.size * 0.1 + 6 + 'em'} : {}">
+    <div class="content">
       <!-- <img class="weather-icon" :src="'http://openweathermap.org/img/wn/' + chunk.icon + '@2x.png'"> -->
       <img class="weather-icon" :src="require('./weather/' + chunk.icon + '.svg')">
       <div class="text">

@@ -11,58 +11,75 @@
   border-right: 1px solid rgba(0,0,0,0.3)
 
   &.weather-rating-1
-    background-color: lighten($pistachio, 45%)
-    // background-color: lighten($cadet-blue, 45%)
+    background-color: lighten($pistachio, 15%)
   &.weather-rating-2
+  &.weather-rating-2
+    background-color: lighten($pistachio, 32%)
   &.weather-rating-3
-  &.weather-rating-4
-    // background-color: lighten($cg-blue, 45%)
+  &.weather-rating-3
     background-color: lighten($maize-crayola, 45%)
-  &.weather-rating-5
-  &.weather-rating-6
-    // background-color: lighten($yellow-orange-color-wheel, 45%)
-    background-color: lighten($orange-red, 45%)
+  &.weather-rating-4
+  &.weather-rating-4
+    background-color: lighten($maize-crayola, 35%)
 
-  &.large-content
-    justify-content: center
-    position: relative
+  &:not(.extra-special)
+    &:hover
+      opacity: 1
+  // &.weather-rating-1
+  //   &.large-content
+  //     // justify-content: center
+  //     position: relative
+  //     overflow: hidden
+
+  //     img.weather-icon
+  //       position: absolute
+  //       top: 25%
+  //       right: 8%
+  //       width: auto
+  //       height: 500%
+  //       z-index: 0
+  //       margin: 0 0
+  //       filter: invert(0%) sepia(0%) saturate(7484%) hue-rotate(313deg) brightness(93%) contrast(107%);
+  //       opacity: 0.2
+  &.extra-special
     overflow: hidden
-
-    img.weather-icon
-      position: absolute
-      top: 25%
-      right: 8%
-      width: auto
-      height: 180%
-      z-index: 0
-      margin: 0 0
-      filter: invert(0%) sepia(0%) saturate(7484%) hue-rotate(313deg) brightness(93%) contrast(107%);
-      opacity: 0.2
+    position: relative
 
     .content
-      position: absolute
-      top: 0
       flex-direction: column
       justify-content: center
       align-items: flex-start
+
+      img.weather-icon
+        position: absolute
+        top: 10%
+        left: 15%
+        width: auto
+        height: 80%
+        z-index: 0
+        margin: 0 0
+        filter: invert(0%) sepia(0%) saturate(7484%) hue-rotate(313deg) brightness(93%) contrast(107%);
+        opacity: 0.2
 
       .text
         position: relative
         width: 100%
         z-index: 1
-        top: 0.2em
+        top: 2em
         flex-direction: row
         align-items: flex-end
         justify-content: flex-end
 
         p
+          font-size: 4em
+
           &.temp
             position: relative
             display: block
             line-height: 0.5em
 
           &.wind-pop
-            font-size: 0.2em
+            font-size: 0.7em
             text-align: left
             display: block
             width: 100%
@@ -75,9 +92,6 @@
             top: 20%
             left: 100%
             display: block
-
-          // .wind-pop
-          //   font-size: 0.2em
 
   .content
     display: flex
