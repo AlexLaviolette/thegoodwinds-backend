@@ -36,7 +36,7 @@ class WeatherReport:
     self.feels_like = feels_like
     self.wind_kmh = round(wind_kmh, 2)
     self.pop = pop
-    self.weather_rating, self.wind_rating, self.pop_rating = get_weather_ratings(wind_kmh, pop)
+    self.weather_rating, self.wind_rating, self.pop_rating = get_weather_ratings(temp, wind_kmh, pop)
     self.icon = icon
 
   def to_json(self):
@@ -131,19 +131,29 @@ def get_wind_rating(wind_kmh):
   return min(math.ceil(wind_kmh/10), 6)
 
 
-def get_pop_rating(pop):
-  if (pop > 0.7): return 6
-  elif (pop > 0.6): return 5
-  elif (pop > 0.5): return 4
-  elif (pop > 0.3): return 3
-  elif (pop > 0.2): return 2
-  else: return 1
+# Below zero, assume snow which is more tolerable
+def get_pop_rating(pop, temp):
+  if (temp > 0):
+    # Rain
+    if (pop > 0.7): return 6
+    elif (pop > 0.6): return 5
+    elif (pop > 0.5): return 4
+    elif (pop > 0.3): return 3
+    elif (pop > 0.2): return 2
+    else: return 1
+  
+  else:
+    # Snow
+    if (pop > 0.9): return 4
+    elif (pop > 0.7): return 3
+    elif (pop > 0.5): return 2
+    else: return 1
 
 
 # Returns (weather_rating, wind_rating, pop_rating). All integers from (1-6)
-def get_weather_ratings(wind_kmh, pop):
+def get_weather_ratings(temp, wind_kmh, pop):
   wind_rating = get_wind_rating(wind_kmh)
-  pop_rating = get_pop_rating(pop)
+  pop_rating = get_pop_rating(pop, temp)
   weather_rating = max(wind_rating, pop_rating)
 
   return (weather_rating, wind_rating, pop_rating)

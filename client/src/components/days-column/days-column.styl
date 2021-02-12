@@ -9,9 +9,9 @@
   flex-direction: column
   flex-grow: 1
 
-  // +media('lg')
-  &:nth-last-child(-n+3)
-    display: none
+  +media('lg')
+    &:nth-last-child(-n+3)
+      display: none
 
   .days
     display: flex
@@ -61,5 +61,6 @@
     font-size: 2em
     font-weight: 800
     line-height: 0.9em
+
 
 dump_media_cache()
