@@ -1,6 +1,6 @@
 <template>
   <div>
-    <current-weather></current-weather>
+    <!-- <current-weather></current-weather> -->
     <days-grid></days-grid>
   </div>
 </template>
