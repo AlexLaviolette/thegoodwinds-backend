@@ -7,9 +7,6 @@ from collections import defaultdict
 
 API_TOKEN = os.environ['OPEN_WEATHER_MAP_API_TOKEN']
 BASE_ENDPOINT = "http://api.openweathermap.org/data/2.5/"
-# TODO: find way to make this dynamic
-lat = 43.641697
-lon = -79.4240338
 
 MS_TO_KMH = 3.6
 
@@ -42,7 +39,7 @@ class WeatherReport:
   def to_json(self):
     return self.__dict__
 
-def get_weather_report_current():
+def get_weather_report_current(lat, lon):
   endpoint = "%s/weather?lat=%s&lon=%s&appid=%s&units=metric" % (BASE_ENDPOINT, lat, lon, API_TOKEN)
   response = requests.get(endpoint)
   json = response.json()
@@ -58,7 +55,7 @@ def get_weather_report_current():
 # Returns the weather for today up until the current time
 # This uses UTC, so we might get some weather for yesterday in our timezone
 # The weather report endpoint only returns future weather, so we need this to complete today's weather
-def get_weather_report_today_so_far():
+def get_weather_report_today_so_far(lat, lon):
   current_timestamp = int(time.time())
   endpoint = "%s/onecall/timemachine?lat=%s&lon=%s&appid=%s&dt=%s&units=metric" % (BASE_ENDPOINT, lat, lon, API_TOKEN, current_timestamp)
   response = requests.get(endpoint)
@@ -68,7 +65,7 @@ def get_weather_report_today_so_far():
 
 # Retrieves current, hourly and daily weather reports
 # Returns hourly/daily grouped by day
-def get_weather_report_hourly():
+def get_weather_report_hourly(lat, lon):
   endpoint = "%s/onecall?lat=%s&lon=%s&exclude=minutely&appid=%s&units=metric" % (BASE_ENDPOINT, lat, lon, API_TOKEN)
   response = requests.get(endpoint)
   json = response.json()
@@ -84,7 +81,7 @@ def get_weather_report_hourly():
     json['current']['weather'][0]['icon'])
 
 
-  today = get_weather_report_today_so_far()
+  today = get_weather_report_today_so_far(lat, lon)
   for hourly in today['hourly']:
     dt = hourly['dt']
     date_info = datetime.fromtimestamp(dt)

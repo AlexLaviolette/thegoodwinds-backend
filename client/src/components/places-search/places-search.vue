@@ -5,7 +5,9 @@
   <div class="holder">
     <input id="pac-input" class="controls" type="text" placeholder="Search Box" />
     <div id="map"></div>
-    <!-- <div class="App"/> -->
+    <div id="get-weather">
+      <button type="button" class="btn btn-primary">Get Weather</button>
+    </div>
   </div>
 </template>
 

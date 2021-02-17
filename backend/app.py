@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from services.weather_service import *
 from datetime import datetime
@@ -19,14 +19,14 @@ def status():
 
 @app.route('/weather', methods=['GET'])
 def get_current_weather():
-  current = get_weather_report_current()
+  current = get_weather_report_current(request.args.get('lat'), request.args.get('lon'))
   current.temp = round(current.temp)
   current.wind_kmh = round(current.wind_kmh)
   return current.to_json()
 
 
-def get_weather_by_hour():
-  weather_report = get_weather_report_hourly()
+def get_weather_by_hour(lat, lon):
+  weather_report = get_weather_report_hourly(lat, lon)
   # Default each hour to the day's default (we only get 2 days of actual hourly weather)
   summary = {}
   for day, weather in weather_report.daily.items():
@@ -45,12 +45,12 @@ def get_weather_by_hour():
 # Return 7x24 grid, one per day, with 24 hours each
 @app.route('/weather/hourly', methods=['GET'])
 def get_weather_hourly():
-  return get_weather_by_hour()
+  return get_weather_by_hour(request.args.get('lat'), request.args.get('lon'))
 
 # Returns chunks grouped by weather rating.
 @app.route('/weather/chunked', methods=['GET'])
 def get_weather_chunks():
-  hourly = get_weather_by_hour()
+  hourly = get_weather_by_hour(request.args.get('lat'), request.args.get('lon'))
 
   chunked = defaultdict(lambda: [])
 
