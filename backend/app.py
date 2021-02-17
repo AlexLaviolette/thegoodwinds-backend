@@ -13,6 +13,10 @@ app.config.from_object(__name__)
 # enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
 
+@app.route('/status', methods=['GET'])
+def status():
+  return {'status': 'ok'}
+
 @app.route('/weather', methods=['GET'])
 def get_current_weather():
   current = get_weather_report_current()
