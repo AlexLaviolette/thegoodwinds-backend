@@ -58,10 +58,12 @@ def get_weather_chunks():
     previous_rating = 0
     for hour, weather in enumerate(hours): # hour is the index
       weather_rating = weather['weather_rating']
+      # different weather rating means the start of a new chunk
       if (weather_rating != previous_rating):
         chunk = {
           "weather_rating": weather_rating,
           "size": 1,
+          "start": hour,
           "wind_rating": weather['wind_rating'],
           "pop_rating": weather["pop_rating"],
           "wind_kmh": weather["wind_kmh"],

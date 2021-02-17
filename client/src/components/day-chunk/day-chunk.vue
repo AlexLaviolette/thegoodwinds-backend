@@ -13,6 +13,25 @@
         <p class="temp">{{ chunk.temp }}<sup>°C</sup></p>
         <p class="wind-pop">{{ chunk.wind_kmh }}km/h, {{ chunk.pop }}%</p>
       </div>
+
+      <div class="hour">
+        <!-- Chunk spans am-pm -->
+        <p v-if="(chunk.size > 1 && chunk.start < 12 && chunk.start + chunk.size > 12) || (chunk.size > 1 && chunk.start + chunk.size == 24)">
+          {{ today.setHours(chunk.start) | moment("ha") }}
+          –
+          {{ today.setHours(chunk.start + chunk.size) | moment("ha") }}
+        </p>
+        <!-- Chunk only exists in am or pm -->
+        <p v-else-if="chunk.size > 1">
+          {{ today.setHours(chunk.start) | moment("h") }}
+          –
+          {{ today.setHours(chunk.start + chunk.size) | moment("ha") }}
+        </p>
+        <!-- Single hour chunk -->
+        <p v-else>
+          {{ today.setHours(chunk.start) | moment("ha") }}
+        </p>
+      </div>
     </div>
     <!-- <div :style="{height: ((chunk.size-1) * 35) + 'px'}" class="cell"></div> -->
   </div>
@@ -24,6 +43,7 @@ export default Vue.extend({
   name: 'day-chunk',
   data() {
     return {
+      today: new Date()
     };
   },
   props: ['chunk']
