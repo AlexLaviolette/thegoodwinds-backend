@@ -1,0 +1,2 @@
+class OpenWeatherMapError(Exception):
+  pass

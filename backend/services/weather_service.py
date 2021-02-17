@@ -2,8 +2,12 @@ import requests
 import os
 import math
 import time
+import logging
 from datetime import datetime
 from collections import defaultdict
+from exceptions.custom_errors import *
+
+logger = logging.getLogger(__name__)
 
 API_TOKEN = os.environ['OPEN_WEATHER_MAP_API_TOKEN']
 BASE_ENDPOINT = "http://api.openweathermap.org/data/2.5/"
@@ -39,10 +43,18 @@ class WeatherReport:
   def to_json(self):
     return self.__dict__
 
+def validate_response(response):
+  if (response.status_code != 200):
+    error = "Could not get current weather: (%s) %s" % (response.status_code, response.text)
+    logger.error(error)
+    raise OpenWeatherMapError(error)
+  else:
+    return response.json()
+
 def get_weather_report_current(lat, lon):
   endpoint = "%s/weather?lat=%s&lon=%s&appid=%s&units=metric" % (BASE_ENDPOINT, lat, lon, API_TOKEN)
   response = requests.get(endpoint)
-  json = response.json()
+  json = validate_response(response)
 
   return WeatherReport(
     json['dt'],
@@ -59,7 +71,7 @@ def get_weather_report_today_so_far(lat, lon):
   current_timestamp = int(time.time())
   endpoint = "%s/onecall/timemachine?lat=%s&lon=%s&appid=%s&dt=%s&units=metric" % (BASE_ENDPOINT, lat, lon, API_TOKEN, current_timestamp)
   response = requests.get(endpoint)
-  json = response.json()
+  json = validate_response(response)
 
   return json
 
@@ -68,7 +80,7 @@ def get_weather_report_today_so_far(lat, lon):
 def get_weather_report_hourly(lat, lon):
   endpoint = "%s/onecall?lat=%s&lon=%s&exclude=minutely&appid=%s&units=metric" % (BASE_ENDPOINT, lat, lon, API_TOKEN)
   response = requests.get(endpoint)
-  json = response.json()
+  json = validate_response(response)
 
   weather_summary = WeatherSummary()
 

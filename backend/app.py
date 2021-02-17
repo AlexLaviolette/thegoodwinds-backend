@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from services.weather_service import *
 from datetime import datetime
+from exceptions.custom_errors import *
 
 # configuration
 DEBUG = True
@@ -13,9 +14,15 @@ app.config.from_object(__name__)
 # enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
 
+@app.errorhandler(OpenWeatherMapError)
+def handle_open_weather_map_error(e):
+  return "Could not fetch weather data.", 424
+
+
 @app.route('/status', methods=['GET'])
 def status():
   return {'status': 'ok'}
+
 
 @app.route('/weather', methods=['GET'])
 def get_current_weather():
