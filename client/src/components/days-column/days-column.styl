@@ -1,6 +1,11 @@
 @import '~@/styles/mixins'
 @import '~@/styles/variables'
 
+.days-grid
+  // Make today's date standout
+  .days-column:first-of-type .date-header
+    color: $today-blue
+
 .days-column
   height: 100vh
   display: flex
