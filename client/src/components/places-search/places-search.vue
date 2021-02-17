@@ -6,7 +6,7 @@
     <input id="pac-input" class="controls" type="text" placeholder="Search Box" />
     <div id="map"></div>
     <div id="get-weather">
-      <button type="button" class="btn btn-primary">Get Weather</button>
+      <router-link :to="{ name: 'home', query: { lat: coords.lat, lon: coords.lon}}" tag="button">Get Weather</router-link>
     </div>
   </div>
 </template>
@@ -17,11 +17,19 @@ import init from '../../utils/gplaces';
 
 export default {
   name: 'App',
+  data() {
+    return {
+      coords: {
+          'lat': 43.6425662,
+          'lon': -79.3892455
+      }
+    };
+  },
   async mounted() {
     this.$nextTick(async function () {
       const google = await init();
       const map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: -33.8688, lng: 151.2195 },
+        center: { lat: 43.6425662, lng: -79.3892455 },
         zoom: 13,
         mapTypeId: "roadmap",
       });
@@ -41,6 +49,11 @@ export default {
 
         if (places.length == 0) {
           return;
+        } else {
+          this.coords = {
+            'lat': places[0].geometry.location.lat(),
+            'lon': places[0].geometry.location.lng()
+          };
         }
         // Clear out the old markers.
         markers.forEach((marker) => {

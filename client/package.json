@@ -42,6 +42,7 @@
       "parser": "babel-eslint"
     },
     "rules": {
+      "no-debugger": 0,
       "max-len": [
         "error",
         {
