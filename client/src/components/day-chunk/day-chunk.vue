@@ -11,7 +11,7 @@
       <img class="weather-icon" :src="require('./weather/' + chunk.icon + '.svg')">
       <div class="text">
         <p class="temp">{{ chunk.temp }}<sup>°C</sup></p>
-        <p class="wind-pop">{{ chunk.wind_kmh }}km/h, {{ chunk.pop }}%</p>
+        <p class="wind-pop">{{ chunk.wind_kmh }}km/h</p>
       </div>
 
       <div class="hour">
