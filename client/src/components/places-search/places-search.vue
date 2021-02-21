@@ -6,7 +6,7 @@
     <input id="pac-input" class="controls" type="text" placeholder="Search Box" />
     <div id="map"></div>
     <div id="get-weather">
-      <router-link :to="{ name: 'home', query: { lat: coords.lat, lon: coords.lon}}" tag="button">Get Weather</router-link>
+      <router-link :to="{ name: 'home', query: { lat: coords.lat, lon: coords.lon, units: units}}" tag="button">Get Weather</router-link>
     </div>
   </div>
 </template>
@@ -22,7 +22,8 @@ export default {
       coords: {
           'lat': 43.6425662,
           'lon': -79.3892455
-      }
+      },
+      units: 'metric'
     };
   },
   async mounted() {
@@ -54,7 +55,12 @@ export default {
             'lat': places[0].geometry.location.lat(),
             'lon': places[0].geometry.location.lng()
           };
+          let country = places[0].address_components.find(function(x) {return x.types[0] == "country";})
+          if (country && country.short_name == "US") {
+            this.units = 'imperial';
+          }
         }
+
         // Clear out the old markers.
         markers.forEach((marker) => {
           marker.setMap(null);

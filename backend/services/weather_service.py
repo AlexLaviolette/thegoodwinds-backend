@@ -46,11 +46,10 @@ class WeatherReport:
 
 
 class WeatherService():
-  # units are metric or imperial
-  def __init__(self, lat, lon, units):
+  def __init__(self, lat, lon):
     self.lat = lat
     self.lon = lon
-    self.units = units 
+    self.units = 'metric' # We get everything in metric and convert on the frontend
 
 
   def validate_response(self, response):
