@@ -14,6 +14,7 @@ BASE_ENDPOINT = "http://api.openweathermap.org/data/2.5/"
 
 MS_TO_KMH = 3.6
 
+
 # Contains current weather, as well as hourly weather reports for the next 2 days 
 # and daily weather reports for the next 7 days
 class WeatherSummary:
@@ -43,96 +44,105 @@ class WeatherReport:
   def to_json(self):
     return self.__dict__
 
-def validate_response(response):
-  if (response.status_code != 200):
-    error = "Could not get current weather: (%s) %s" % (response.status_code, response.text)
-    logger.error(error)
-    raise OpenWeatherMapError(error)
-  else:
-    return response.json()
 
-def get_weather_report_current(lat, lon):
-  endpoint = "%s/weather?lat=%s&lon=%s&appid=%s&units=metric" % (BASE_ENDPOINT, lat, lon, API_TOKEN)
-  response = requests.get(endpoint)
-  json = validate_response(response)
-
-  return WeatherReport(
-    json['dt'],
-    json['main']['temp'],
-    json['main']['feels_like'],
-    json['wind']['speed'] * MS_TO_KMH,
-    0,
-    json['weather'][0]['icon'])
-
-# Returns the weather for today up until the current time
-# This uses UTC, so we might get some weather for yesterday in our timezone
-# The weather report endpoint only returns future weather, so we need this to complete today's weather
-def get_weather_report_today_so_far(lat, lon):
-  current_timestamp = int(time.time())
-  endpoint = "%s/onecall/timemachine?lat=%s&lon=%s&appid=%s&dt=%s&units=metric" % (BASE_ENDPOINT, lat, lon, API_TOKEN, current_timestamp)
-  response = requests.get(endpoint)
-  json = validate_response(response)
-
-  return json
-
-# Retrieves current, hourly and daily weather reports
-# Returns hourly/daily grouped by day
-def get_weather_report_hourly(lat, lon):
-  endpoint = "%s/onecall?lat=%s&lon=%s&exclude=minutely&appid=%s&units=metric" % (BASE_ENDPOINT, lat, lon, API_TOKEN)
-  response = requests.get(endpoint)
-  json = validate_response(response)
-
-  weather_summary = WeatherSummary()
-
-  weather_summary.current = WeatherReport(
-    json['current']['dt'],
-    json['current']['temp'],
-    json['current']['feels_like'],
-    json['current']['wind_speed'] * MS_TO_KMH,
-    0,
-    json['current']['weather'][0]['icon'])
+class WeatherService():
+  # units are metric or imperial
+  def __init__(self, lat, lon, units):
+    self.lat = lat
+    self.lon = lon
+    self.units = units 
 
 
-  today = get_weather_report_today_so_far(lat, lon)
-  for hourly in today['hourly']:
-    dt = hourly['dt']
-    date_info = datetime.fromtimestamp(dt)
-    # We don't care about yesterday's weather data
-    if (date_info.day >= datetime.now().day):
+  def validate_response(self, response):
+    if (response.status_code != 200):
+      error = "Could not get current weather: (%s) %s" % (response.status_code, response.text)
+      logger.error(error)
+      raise OpenWeatherMapError(error)
+    else:
+      return response.json()
+
+  def get_weather_report_current(self):
+    endpoint = "%s/weather?lat=%s&lon=%s&appid=%s&units=%s" % (BASE_ENDPOINT, self.lat, self.lon, API_TOKEN, self.units)
+    response = requests.get(endpoint)
+    json = self.validate_response(response)
+
+    return WeatherReport(
+      json['dt'],
+      json['main']['temp'],
+      json['main']['feels_like'],
+      json['wind']['speed'] * MS_TO_KMH,
+      0,
+      json['weather'][0]['icon'])
+
+  # Returns the weather for today up until the current time
+  # This uses UTC, so we might get some weather for yesterday in our timezone
+  # The weather report endpoint only returns future weather, so we need this to complete today's weather
+  def get_weather_report_today_so_far(self):
+    current_timestamp = int(time.time())
+    endpoint = "%s/onecall/timemachine?lat=%s&lon=%s&appid=%s&dt=%s&units=%s" % (BASE_ENDPOINT, self.lat, self.lon, API_TOKEN, current_timestamp, self.units)
+    response = requests.get(endpoint)
+    json = self.validate_response(response)
+
+    return json
+
+  # Retrieves current, hourly and daily weather reports
+  # Returns hourly/daily grouped by day
+  def get_weather_report_hourly(self):
+    endpoint = "%s/onecall?lat=%s&lon=%s&exclude=minutely&appid=%s&units=%s" % (BASE_ENDPOINT, self.lat, self.lon, API_TOKEN, self.units)
+    response = requests.get(endpoint)
+    json = self.validate_response(response)
+
+    weather_summary = WeatherSummary()
+
+    weather_summary.current = WeatherReport(
+      json['current']['dt'],
+      json['current']['temp'],
+      json['current']['feels_like'],
+      json['current']['wind_speed'] * MS_TO_KMH,
+      0,
+      json['current']['weather'][0]['icon'])
+
+
+    today = self.get_weather_report_today_so_far()
+    for hourly in today['hourly']:
+      dt = hourly['dt']
+      date_info = datetime.fromtimestamp(dt)
+      # We don't care about yesterday's weather data
+      if (date_info.day >= datetime.now().day):
+        date_key = str(date_info.date())
+        temp = hourly['temp']
+        feels_like = hourly['feels_like']
+        wind_kmh = hourly['wind_speed'] * MS_TO_KMH
+        pop = 0 # historical weather doesn't include pop
+        icon = hourly['weather'][0]['icon']
+        weather_report = WeatherReport(dt, temp, feels_like, wind_kmh, pop, icon)
+        weather_summary.hourly[date_key].append(weather_report)
+
+    for hourly in json['hourly']:
+      dt = hourly['dt']
+      date_info = datetime.fromtimestamp(dt)
       date_key = str(date_info.date())
       temp = hourly['temp']
       feels_like = hourly['feels_like']
       wind_kmh = hourly['wind_speed'] * MS_TO_KMH
-      pop = 0 # historical weather doesn't include pop
+      pop = hourly['pop']
       icon = hourly['weather'][0]['icon']
       weather_report = WeatherReport(dt, temp, feels_like, wind_kmh, pop, icon)
       weather_summary.hourly[date_key].append(weather_report)
 
-  for hourly in json['hourly']:
-    dt = hourly['dt']
-    date_info = datetime.fromtimestamp(dt)
-    date_key = str(date_info.date())
-    temp = hourly['temp']
-    feels_like = hourly['feels_like']
-    wind_kmh = hourly['wind_speed'] * MS_TO_KMH
-    pop = hourly['pop']
-    icon = hourly['weather'][0]['icon']
-    weather_report = WeatherReport(dt, temp, feels_like, wind_kmh, pop, icon)
-    weather_summary.hourly[date_key].append(weather_report)
+    for daily in json['daily']:
+      dt = daily['dt']
+      date_info = datetime.fromtimestamp(dt)
+      date_key = str(date_info.date())
+      temp = daily['temp']['day']
+      feels_like = daily['feels_like']['day']
+      wind_kmh = daily['wind_speed'] * MS_TO_KMH
+      pop = daily['pop']
+      icon = daily['weather'][0]['icon']
+      weather_report = WeatherReport(dt, temp, feels_like, wind_kmh, pop, icon)
+      weather_summary.daily[date_key] = weather_report
 
-  for daily in json['daily']:
-    dt = daily['dt']
-    date_info = datetime.fromtimestamp(dt)
-    date_key = str(date_info.date())
-    temp = daily['temp']['day']
-    feels_like = daily['feels_like']['day']
-    wind_kmh = daily['wind_speed'] * MS_TO_KMH
-    pop = daily['pop']
-    icon = daily['weather'][0]['icon']
-    weather_report = WeatherReport(dt, temp, feels_like, wind_kmh, pop, icon)
-    weather_summary.daily[date_key] = weather_report
-
-  return weather_summary
+    return weather_summary
 
 
 # 0-10 = 1, 11-20 = 2, 21-30 = 3, 31-40 = 4, 41-50 = 5, 51+ = 6
