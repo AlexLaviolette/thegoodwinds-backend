@@ -6,7 +6,7 @@
     <input id="pac-input" class="controls" type="text" placeholder="Search Box" />
     <div id="map"></div>
     <div id="get-weather">
-      <router-link :to="{ name: 'home', query: { lat: coords.lat, lon: coords.lon, units: units}}" tag="button">Get Weather</router-link>
+      <router-link :to="{ name: 'home' }" tag="button">Get Weather</router-link>
     </div>
   </div>
 </template>
@@ -17,15 +17,7 @@ import init from '../../utils/gplaces';
 
 export default {
   name: 'App',
-  data() {
-    return {
-      coords: {
-          'lat': 43.6425662,
-          'lon': -79.3892455
-      },
-      units: 'metric'
-    };
-  },
+
   async mounted() {
     this.$nextTick(async function () {
       const google = await init();
@@ -51,13 +43,13 @@ export default {
         if (places.length == 0) {
           return;
         } else {
-          this.coords = {
-            'lat': places[0].geometry.location.lat(),
-            'lon': places[0].geometry.location.lng()
-          };
+          localStorage.lat = places[0].geometry.location.lat();
+          localStorage.lon = places[0].geometry.location.lng();
           let country = places[0].address_components.find(function(x) {return x.types[0] == "country";})
           if (country && country.short_name == "US") {
-            this.units = 'imperial';
+            localStorage.units = 'imperial';
+          } else {
+            localStorage.units = 'metric';
           }
         }
 

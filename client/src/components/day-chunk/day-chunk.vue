@@ -10,8 +10,12 @@
       <!-- <img class="weather-icon" :src="'http://openweathermap.org/img/wn/' + chunk.icon + '@2x.png'"> -->
       <img class="weather-icon" :src="require('./weather/' + chunk.icon + '.svg')">
       <div class="text">
-        <p class="temp">{{ chunk.temp }}<sup>°C</sup></p>
-        <p class="wind-pop">{{ chunk.wind_kmh }}km/h</p>
+
+        <p v-if="units == 'imperial'" class="temp">{{ Math.round((chunk.temp * 9/5) + 32) }}<sup>°F</sup></p>
+        <p v-else class="temp">{{ chunk.temp }}<sup>°C</sup></p>
+
+        <p v-if="units == 'imperial'" class="wind-pop">{{ Math.round(chunk.wind_kmh / 1.609) }} mph</p>
+        <p v-else class="wind-pop">{{ chunk.wind_kmh }} km/h</p>
       </div>
 
       <div class="hour">
@@ -43,8 +47,14 @@ export default Vue.extend({
   name: 'day-chunk',
   data() {
     return {
-      today: new Date()
+      today: new Date(),
+      units: 'metric'
     };
+  },
+  mounted() {
+    if (localStorage.units) {
+      this.units = localStorage.units
+    }
   },
   props: ['chunk']
 });

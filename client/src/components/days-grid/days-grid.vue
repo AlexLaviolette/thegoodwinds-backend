@@ -25,8 +25,8 @@ export default Vue.extend({
   created: async function () {
     // this.chunked = response;
     try {
-      let lat = this.$route.query.lat
-      let lon = this.$route.query.lon
+      let lat = localStorage.lat;
+      let lon = localStorage.lon;
       let result = await this.$axios.get('http://localhost:5000/weather/chunked?lat=' + lat + '&lon=' + lon);
       this.chunked = result.data;
     } catch(error) {
