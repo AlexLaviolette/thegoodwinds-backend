@@ -26,14 +26,14 @@ def status():
 
 @app.route('/weather', methods=['GET'])
 def get_current_weather():
-  current = get_weather_report_current(request.args.get('lat'), request.args.get('lon'))
+  current = WeatherService(request.args.get('lat'), request.args.get('lon')).get_weather_report_current()
   current.temp = round(current.temp)
   current.wind_kmh = round(current.wind_kmh)
   return current.to_json()
 
 
 def get_weather_by_hour(lat, lon):
-  weather_report = get_weather_report_hourly(lat, lon)
+  weather_report = WeatherService(lat, lon).get_weather_report_hourly()
   # Default each hour to the day's default (we only get 2 days of actual hourly weather)
   summary = {}
   for day, weather in weather_report.daily.items():
