@@ -42,8 +42,10 @@ def get_weather_by_hour(lat, lon):
 
   # Fill in the hourly data we have
   for day, hours in weather_report.hourly.items():
+    print("DAY: %s" % day)
     for weather in hours:
-      hour = datetime.fromtimestamp(weather.dt).hour
+      hour = datetime.utcfromtimestamp(weather.dt).hour
+      print("HOUR: %s" % hour)
       summary[day][hour] = weather.to_json()
 
   return summary

@@ -3,7 +3,7 @@ import os
 import math
 import time
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 from collections import defaultdict
 from exceptions.custom_errors import *
 
@@ -91,10 +91,13 @@ class WeatherService():
     response = requests.get(endpoint)
     json = self.validate_response(response)
 
+    timezone_offset = json['timezone_offset'] # Timezone offset from UTC in seconds
+    current_local_time = datetime.utcnow() + timedelta(0, timezone_offset)
+
     weather_summary = WeatherSummary()
 
     weather_summary.current = WeatherReport(
-      json['current']['dt'],
+      json['current']['dt'] + timezone_offset,
       json['current']['temp'],
       json['current']['feels_like'],
       json['current']['wind_speed'] * MS_TO_KMH,
@@ -104,10 +107,10 @@ class WeatherService():
 
     today = self.get_weather_report_today_so_far()
     for hourly in today['hourly']:
-      dt = hourly['dt']
-      date_info = datetime.fromtimestamp(dt)
+      dt = hourly['dt'] + timezone_offset # Add timezone_offset to put everything in local time
+      date_info = datetime.utcfromtimestamp(dt)
       # We don't care about yesterday's weather data
-      if (date_info.day >= datetime.now().day):
+      if (date_info.day >= current_local_time.day):
         date_key = str(date_info.date())
         temp = hourly['temp']
         feels_like = hourly['feels_like']
@@ -118,9 +121,10 @@ class WeatherService():
         weather_summary.hourly[date_key].append(weather_report)
 
     for hourly in json['hourly']:
-      dt = hourly['dt']
-      date_info = datetime.fromtimestamp(dt)
+      dt = hourly['dt'] + timezone_offset # Add timezone_offset to put everything in local time
+      date_info = datetime.utcfromtimestamp(dt)
       date_key = str(date_info.date())
+      
       temp = hourly['temp']
       feels_like = hourly['feels_like']
       wind_kmh = hourly['wind_speed'] * MS_TO_KMH
@@ -130,14 +134,16 @@ class WeatherService():
       weather_summary.hourly[date_key].append(weather_report)
 
     for daily in json['daily']:
-      dt = daily['dt']
-      date_info = datetime.fromtimestamp(dt)
+      dt = daily['dt'] + timezone_offset # Add timezone_offset to put everything in local time
+      date_info = datetime.utcfromtimestamp(dt)
       date_key = str(date_info.date())
+
       temp = daily['temp']['day']
       feels_like = daily['feels_like']['day']
       wind_kmh = daily['wind_speed'] * MS_TO_KMH
       pop = daily['pop']
       icon = daily['weather'][0]['icon']
+      print("DAY: %s, TEMP: %s, DT: %s" %(date_key, temp, daily['dt']))
       weather_report = WeatherReport(dt, temp, feels_like, wind_kmh, pop, icon)
       weather_summary.daily[date_key] = weather_report
 
