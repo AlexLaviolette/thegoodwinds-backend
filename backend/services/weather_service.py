@@ -110,7 +110,7 @@ class WeatherService():
       dt = hourly['dt'] + timezone_offset # Add timezone_offset to put everything in local time
       date_info = datetime.utcfromtimestamp(dt)
       # We don't care about yesterday's weather data
-      if (date_info.day >= current_local_time.day):
+      if (date_info.month >= current_local_time.month and date_info.day >= current_local_time.day):
         date_key = str(date_info.date())
         temp = hourly['temp']
         feels_like = hourly['feels_like']
@@ -143,7 +143,6 @@ class WeatherService():
       wind_kmh = daily['wind_speed'] * MS_TO_KMH
       pop = daily['pop']
       icon = daily['weather'][0]['icon']
-      print("DAY: %s, TEMP: %s, DT: %s" %(date_key, temp, daily['dt']))
       weather_report = WeatherReport(dt, temp, feels_like, wind_kmh, pop, icon)
       weather_summary.daily[date_key] = weather_report
 
