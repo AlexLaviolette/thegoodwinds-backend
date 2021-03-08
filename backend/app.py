@@ -42,10 +42,8 @@ def get_weather_by_hour(lat, lon):
 
   # Fill in the hourly data we have
   for day, hours in weather_report.hourly.items():
-    print("DAY: %s" % day)
     for weather in hours:
       hour = datetime.utcfromtimestamp(weather.dt).hour
-      print("HOUR: %s" % hour)
       summary[day][hour] = weather.to_json()
 
   return summary
@@ -61,14 +59,18 @@ def get_weather_hourly():
 def get_weather_chunks():
   hourly = get_weather_by_hour(request.args.get('lat'), request.args.get('lon'))
 
+  daytime_start = int(request.args.get('start', -1))
+
   chunked = defaultdict(lambda: [])
 
   for day, hours in hourly.items():
     previous_rating = 0
     for hour, weather in enumerate(hours): # hour is the index
       weather_rating = weather['weather_rating']
-      # different weather rating means the start of a new chunk
-      if (weather_rating != previous_rating):
+      # Different weather rating means the start of a new chunk
+      # We also start a new chunk at daytime_start to allow for easy viewing
+      if (weather_rating != previous_rating or hour == daytime_start):
+        print("in")
         chunk = {
           "weather_rating": weather_rating,
           "size": 1,
