@@ -11,6 +11,9 @@ DEBUG = True
 app = Flask(__name__)
 app.config.from_object(__name__)
 
+# Heroku sets the port via env var
+port = int(os.environ.get("PORT", 5000))
+
 # enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
 
@@ -101,4 +104,4 @@ def get_weather_chunks():
 
 
 if __name__ == '__main__':
-  app.run(host='0.0.0.0', debug=True)
+  app.run(host='0.0.0.0', port=port, debug=True)
