@@ -18,3 +18,4 @@ jobs:
           heroku_app_name: "goodwinds" #Must be unique in Heroku
           heroku_email: "alex.laviolette92@gmail.com"
           usedocker: true
+          healthcheck: "https://goodwinds.herokuapp.com/status"
