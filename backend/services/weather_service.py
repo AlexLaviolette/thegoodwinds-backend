@@ -15,7 +15,7 @@ BASE_ENDPOINT = "http://api.openweathermap.org/data/2.5/"
 MS_TO_KMH = 3.6
 
 
-# Contains current weather, as well as hourly weather reports for the next 2 days 
+# Contains current weather, as well as hourly weather reports for the next 2 days
 # and daily weather reports for the next 7 days
 class WeatherSummary:
   def __init__(self):
@@ -26,9 +26,10 @@ class WeatherSummary:
   def to_json(self):
     return {
       'current': self.current.to_json(),
-      'hourly': {k: [x.to_json() for x in v] for (k,v) in self.hourly.items()},
-      'daily': {k: v.to_json() for (k,v) in self.daily.items()}
+      'hourly': {k: [x.to_json() for x in v] for (k, v) in self.hourly.items()},
+      'daily': {k: v.to_json() for (k, v) in self.daily.items()}
     }
+
 
 # Basic weather report
 class WeatherReport:
@@ -49,8 +50,7 @@ class WeatherService():
   def __init__(self, lat, lon):
     self.lat = lat
     self.lon = lon
-    self.units = 'metric' # We get everything in metric and convert on the frontend
-
+    self.units = 'metric'  # We get everything in metric and convert on the frontend
 
   def validate_response(self, response):
     if (response.status_code != 200):
@@ -91,7 +91,7 @@ class WeatherService():
     response = requests.get(endpoint)
     json = self.validate_response(response)
 
-    timezone_offset = json['timezone_offset'] # Timezone offset from UTC in seconds
+    timezone_offset = json['timezone_offset']  # Timezone offset from UTC in seconds
     current_local_time = datetime.utcnow() + timedelta(0, timezone_offset)
 
     weather_summary = WeatherSummary()
@@ -104,10 +104,9 @@ class WeatherService():
       0,
       json['current']['weather'][0]['icon'])
 
-
     today = self.get_weather_report_today_so_far()
     for hourly in today['hourly']:
-      dt = hourly['dt'] + timezone_offset # Add timezone_offset to put everything in local time
+      dt = hourly['dt'] + timezone_offset  # Add timezone_offset to put everything in local time
       date_info = datetime.utcfromtimestamp(dt)
       # We don't care about yesterday's weather data
       if (date_info.month >= current_local_time.month and date_info.day >= current_local_time.day):
@@ -115,16 +114,16 @@ class WeatherService():
         temp = hourly['temp']
         feels_like = hourly['feels_like']
         wind_kmh = hourly['wind_speed'] * MS_TO_KMH
-        pop = 0 # historical weather doesn't include pop
+        pop = 0  # historical weather doesn't include pop
         icon = hourly['weather'][0]['icon']
         weather_report = WeatherReport(dt, temp, feels_like, wind_kmh, pop, icon)
         weather_summary.hourly[date_key].append(weather_report)
 
     for hourly in json['hourly']:
-      dt = hourly['dt'] + timezone_offset # Add timezone_offset to put everything in local time
+      dt = hourly['dt'] + timezone_offset  # Add timezone_offset to put everything in local time
       date_info = datetime.utcfromtimestamp(dt)
       date_key = str(date_info.date())
-      
+
       temp = hourly['temp']
       feels_like = hourly['feels_like']
       wind_kmh = hourly['wind_speed'] * MS_TO_KMH
@@ -134,7 +133,7 @@ class WeatherService():
       weather_summary.hourly[date_key].append(weather_report)
 
     for daily in json['daily']:
-      dt = daily['dt'] + timezone_offset # Add timezone_offset to put everything in local time
+      dt = daily['dt'] + timezone_offset  # Add timezone_offset to put everything in local time
       date_info = datetime.utcfromtimestamp(dt)
       date_key = str(date_info.date())
 
@@ -151,7 +150,7 @@ class WeatherService():
 
 # 0-10 = 1, 11-20 = 2, 21-30 = 3, 31-40 = 4, 41-50 = 5, 51+ = 6
 def get_wind_rating(wind_kmh):
-  return min(math.ceil(wind_kmh/10), 6)
+  return min(math.ceil(wind_kmh / 10), 6)
 
 
 # Below zero, assume snow which is more tolerable
@@ -164,7 +163,7 @@ def get_pop_rating(pop, temp):
     elif (pop > 0.3): return 3
     elif (pop > 0.2): return 2
     else: return 1
-  
+
   else:
     # Snow
     if (pop > 0.9): return 4
@@ -180,5 +179,3 @@ def get_weather_ratings(temp, wind_kmh, pop):
   weather_rating = max(wind_rating, pop_rating)
 
   return (weather_rating, wind_rating, pop_rating)
-
-

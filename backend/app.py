@@ -1,8 +1,11 @@
-from flask import Flask, jsonify, request
+from flask import Flask, request
 from flask_cors import CORS
 from services.weather_service import *
 from datetime import datetime
 from exceptions.custom_errors import *
+from collections import defaultdict
+
+import os
 
 # configuration
 DEBUG = True
@@ -16,6 +19,7 @@ port = int(os.environ.get("PORT", 5000))
 
 # enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
+
 
 @app.errorhandler(OpenWeatherMapError)
 def handle_open_weather_map_error(e):
@@ -58,6 +62,7 @@ def get_weather_by_hour(lat, lon):
 def get_weather_hourly():
   return get_weather_by_hour(request.args.get('lat'), request.args.get('lon'))
 
+
 # Returns chunks grouped by weather rating.
 @app.route('/weather/chunked', methods=['GET'])
 def get_weather_chunks():
@@ -69,7 +74,7 @@ def get_weather_chunks():
 
   for day, hours in hourly.items():
     previous_rating = 0
-    for hour, weather in enumerate(hours): # hour is the index
+    for hour, weather in enumerate(hours):  # hour is the index
       weather_rating = weather['weather_rating']
       # Different weather rating means the start of a new chunk
       # We also start a new chunk at daytime_start to allow for easy viewing
