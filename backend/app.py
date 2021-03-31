@@ -27,7 +27,7 @@ def status():
   return {'status': 'ok'}
 
 
-# Returns the current weather
+# Returns the current weather for specified location
 @app.route('/weather', methods=['GET'])
 def get_current_weather():
   current = WeatherService(request.args.get('lat'), request.args.get('lon')).get_weather_report_current()
