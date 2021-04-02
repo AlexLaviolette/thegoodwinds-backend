@@ -31,4 +31,4 @@ export default Vue.extend({
 });
 </script>
 
-<style src="./days-column.styl" lang="stylus"></style>
+<style scoped src="./days-column.styl" lang="stylus"></style>

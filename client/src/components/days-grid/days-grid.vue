@@ -22,18 +22,22 @@ export default Vue.extend({
     'days-column': daysColumn,
     'day-chunk': dayChunk,
   },
-  created: async function () {
-    // this.chunked = response;
-    try {
-      let lat = localStorage.lat;
-      let lon = localStorage.lon;
-      let result = await this.$axios.get('http://localhost:5000/weather/chunked?start=9&lat=' + lat + '&lon=' + lon);
-      this.chunked = result.data;
-    } catch(error) {
-      console.error(error);
-    }
+  created: function () {
+    this.getLocation()
   },
+  methods: {
+    getLocation: async function () {
+      try {
+        let lat = localStorage.lat;
+        let lon = localStorage.lon;
+        let result = await this.$axios.get('http://localhost:5000/weather/chunked?start=9&lat=' + lat + '&lon=' + lon);
+        this.chunked = result.data;
+      } catch(error) {
+        console.error(error);
+      }
+    }
+  }
 });
 </script>
 
-<style src="./days-grid.styl" lang="stylus"></style>
+<style scoped src="./days-grid.styl" lang="stylus"></style>

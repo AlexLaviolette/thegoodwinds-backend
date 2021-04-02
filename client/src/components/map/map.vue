@@ -1,9 +1,12 @@
 <template>
-  <div class="holder">
+  <div>
+    <h2 class="title">Set Your Location</h2>
     <input ref="pac" :model="pac" id="pac-input" class="controls" type="text" placeholder="Search Box" />
-    <div ref="map" id="map"></div>
+    <div class="map-holder">
+      <div ref="map" id="map"></div>
+    </div>
     <div id="get-weather">
-      <router-link :to="{ name: 'home' }" tag="button">Get Weather</router-link>
+      <button @click="setLocation" tag="button">Set Location</button>
     </div>
   </div>
 </template>
@@ -12,7 +15,7 @@
 import init from '@/utils/gplaces';
 
 export default {
-  name: 'App',
+  name: 'map-component',
   data() {
     return {
       map: undefined,
@@ -36,7 +39,7 @@ export default {
       // Create the search box and link it to the UI element.
       const input = this.$refs.pac;
       this.searchBox = new this.google.maps.places.SearchBox(input);
-      this.map.controls[this.google.maps.ControlPosition.TOP_LEFT].push(input);
+      // this.map.controls[this.google.maps.ControlPosition.TOP_LEFT].push(input);
       // Bias the SearchBox results towards current map's viewport.
       this.map.addListener("bounds_changed", () => {
         this.searchBox.setBounds(this.map.getBounds());
@@ -97,6 +100,10 @@ export default {
         localStorage.units = 'metric';
       }
     },
+    setLocation: function () {
+      this.$emit('setLocation')
+      this.$router.push({name: 'home'})
+    }
   },
   beforeDestroy: function () {
     this.google.maps.event.clearListeners(this.map, 'bounds_changed');
@@ -106,4 +113,4 @@ export default {
 </script>
 
 
-<style src="./places-search.styl" lang="stylus"></style>
+<style scoped src="./map.styl" lang="stylus"></style>

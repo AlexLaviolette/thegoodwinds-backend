@@ -60,4 +60,4 @@ export default Vue.extend({
 });
 </script>
 
-<style src="./day-chunk.styl" lang="stylus"></style>
+<style scoped src="./day-chunk.styl" lang="stylus"></style>
