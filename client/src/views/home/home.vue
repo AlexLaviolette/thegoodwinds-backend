@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- <current-weather></current-weather> -->
     <days-grid ref="days"></days-grid>
     <overlay>
       <map-component @setLocation="$refs.days.getLocation()"></map-component>
@@ -19,11 +18,6 @@ export default {
     'overlay': overlay,
     'map-component': map,
   },
-  // methods: {
-  //   setLocation: function () {
-  //     this.
-  //   }
-  // }
 };
 </script>
 
