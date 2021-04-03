@@ -45,7 +45,7 @@ def get_weather_by_hour(lat, lon):
   # Default each hour to the day's default (we only get 2 days of actual hourly weather)
   summary = {}
   for day, weather in weather_report.daily.items():
-    if (len(summary) >= 7): break
+    if (len(summary) >= 4): break
     summary[day] = [weather.to_json()] * 24
 
   # Fill in the hourly data we have
@@ -88,7 +88,8 @@ def get_weather_chunks():
           "wind_kmh": weather["wind_kmh"],
           "pop": weather["pop"],
           "temp": weather["temp"],
-          "icon": weather["icon"]
+          "icon": weather["icon"],
+          "is_morning": hour < daytime_start
         }
         chunked[day].append(chunk)
         previous_rating = weather_rating
