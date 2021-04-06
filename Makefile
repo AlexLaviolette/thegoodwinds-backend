@@ -1,6 +1,7 @@
 # Local development server
 
 run:
+	make stop
 	docker image build -t goodwinds . && docker run -e OPEN_WEATHER_MAP_API_TOKEN -e "PORT=5000" --name goodwinds -p 5000:5000 -d goodwinds
 
 stop:
